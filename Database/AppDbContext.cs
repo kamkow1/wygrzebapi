@@ -13,6 +13,8 @@ namespace wygrzebapi.Context
 
         public DbSet<User> Users { get; set; }
 
+        public DbSet<Search> Searches { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.UseSerialColumns();

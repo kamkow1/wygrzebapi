@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
+using wygrzebapi.Models;
 using System.Linq;
 using wygrzebapi.Context;
-using wygrzebapi.Models;
 
 namespace wygrzebapi.Controllers
 {
@@ -19,63 +18,38 @@ namespace wygrzebapi.Controllers
 
         [HttpPost]
         [Route("/register")]
-        public IActionResult Register(string login, string password)
+        public IActionResult Register(string login, string password, string bio, int age, string country)
         {
-            try
-            {
-                if (login.Length < 2 || login.Length > 20)
-                {
-                    return StatusCode(422);
-                }
 
-                if (password.Length < 5 || password.Length > 32)
-                {
-                    return StatusCode(422);
-                }
+            // check if user with provided login already exists
+            if (_ctx.Users.Where(u => u.Login == login).FirstOrDefault() != null) return StatusCode(409);
 
-                if (login.Trim().Length == 0 || password.Trim().Length == 0)
-                {
-                    return StatusCode(400);
-                }
+            _ctx.Users.Add(new(login: login,
+                               password: password,
+                               bio: bio,
+                               age: age,
+                               country: country));
 
-                if (_ctx.Users.Where(u => u.Login == login || u.Password == password).FirstOrDefault() != null)
-                {
-                    return StatusCode(409);
-                }
+            _ctx.SaveChanges();
 
-                _ctx.Users.Add(new(login, password));
-                _ctx.SaveChanges();
-
-                return StatusCode(200);
-            }
-            catch (Exception)
-            {
-                return StatusCode(500);
-            }
+            return StatusCode(200);
         }
 
         [HttpPost]
         [Route("/login")]
         public IActionResult Login(string login, string password)
         {
-            try
+            if (login.Trim().Length == 0 || password.Trim().Length == 0)
             {
-                if (login.Trim().Length == 0 || password.Trim().Length == 0)
-                {
-                    return StatusCode(400);
-                }
-
-                if (_ctx.Users.Where(x => x.Login == login || x.Password == password) == null)
-                {
-                    return StatusCode(404);
-                }
-
-                return StatusCode(200);
+                return StatusCode(400);
             }
-            catch (Exception)
+
+            if (_ctx.Users.Where(x => x.Login == login || x.Password == password) == null)
             {
-                return StatusCode(500);
+                return StatusCode(404);
             }
+
+            return StatusCode(200);
         }
     }
 }

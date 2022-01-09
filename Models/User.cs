@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace wygrzebapi.Models
@@ -26,19 +28,15 @@ namespace wygrzebapi.Models
 
         public string Bio { get; set; }
 
-        public User(string login, string password, string bio)
+        public virtual ICollection<Search> Searches { get; set; }
+
+        public User(string login, string password, string bio, int age, string country)
         {
             this.Login = login;
             this.Password = password;
-
-            if (bio.Trim().Length == 0)
-            {
-                this.Bio = $"Hej, jestem {login}";
-            }
-            else
-            {
-                this.Bio = bio;
-            }
+            this.Bio = bio;
+            this.Age = age;
+            this.Country = country;
         }
     }
 }
