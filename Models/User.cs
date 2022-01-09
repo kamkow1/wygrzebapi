@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace wygrzebapi.Models
@@ -17,10 +18,27 @@ namespace wygrzebapi.Models
         [MinLength(5, ErrorMessage = "min is 5 characters!")]
         public string Password { get; set; }
 
-        public User(string login, string password)
+        public DateTime CreationDate { get; } = DateTime.UtcNow;
+
+        public int Age { get; set; }
+
+        public string Country { get; set; } = "Polska";
+
+        public string Bio { get; set; }
+
+        public User(string login, string password, string bio)
         {
             this.Login = login;
             this.Password = password;
+
+            if (bio.Trim().Length == 0)
+            {
+                this.Bio = $"Hej, jestem {login}";
+            }
+            else
+            {
+                this.Bio = bio;
+            }
         }
     }
 }
