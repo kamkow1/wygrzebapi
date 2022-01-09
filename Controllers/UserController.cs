@@ -23,6 +23,16 @@ namespace wygrzebapi.Controllers
         {
             try
             {
+                if (login.Length < 2 || login.Length > 20)
+                {
+                    return StatusCode(422);
+                }
+
+                if (password.Length < 5 || password.Length > 32)
+                {
+                    return StatusCode(422);
+                }
+
                 if (login.Trim().Length == 0 || password.Trim().Length == 0)
                 {
                     return StatusCode(400);
