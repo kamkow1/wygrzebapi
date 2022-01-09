@@ -43,5 +43,29 @@ namespace wygrzebapi.Controllers
                 return StatusCode(500);
             }
         }
+
+        [HttpPost]
+        [Route("/login")]
+        public IActionResult Login(string login, string password)
+        {
+            try
+            {
+                if (login.Trim().Length == 0 || password.Trim().Length == 0)
+                {
+                    return StatusCode(400);
+                }
+
+                if (_ctx.Users.Where(x => x.Login == login || x.Password == password) == null)
+                {
+                    return StatusCode(404);
+                }
+
+                return StatusCode(200);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }
     }
 }
