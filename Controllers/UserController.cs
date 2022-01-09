@@ -33,10 +33,23 @@ namespace wygrzebapi.Controllers
                                    bio: bio,
                                    age: age,
                                    country: country,
-                                   email: email,
-                                   remoteIp: Request.HttpContext.Connection.RemoteIpAddress.ToString()));
-                // Request.HttpContext.Connection.RemoteIpAddress.ToString()
+                                   email: email));
                 _ctx.SaveChanges();
+
+                string body = string.Empty;
+                using (StreamReader reader = new(Path.Combine("Email/Templates", "WelcomeEmailTemplate.html")))
+                {
+                    body = reader.ReadToEnd();
+                }
+
+                _emailService.Send(_ctx.Users
+                                    .Where(u => u.Login == login)
+                                    .Select(u => u.Email)
+                                    .SingleOrDefault(),
+                                    $"Witaj użytkowniku {_ctx.Users.Where(u => u.Login == login).Select(u => u.Login).SingleOrDefault()}!",
+                                    "servicewygrzeb@gmail.com",
+                                    "wygrzeb2022",
+                                    body);
 
                 return StatusCode(200);
             }
@@ -61,14 +74,14 @@ namespace wygrzebapi.Controllers
                 {
                     return StatusCode(404);
                 }
-
+/*
                 if (Request.HttpContext.Connection.RemoteIpAddress.ToString() != _ctx.Users
                                                                                     .Where(u => u.Login == login)
                                                                                     .Select(u => u.CurrentRemoteIpAdress)
                                                                                     .SingleOrDefault())
                 {
                     string body = string.Empty;
-                    using (StreamReader reader = new(Path.Combine("Email/Templates", "emailTemplate.html")))
+                    using (StreamReader reader = new(Path.Combine("Email/Templates", "LocationChangedEmailTemplate.html")))
                     {
                         body = reader.ReadToEnd();
                     }
@@ -86,7 +99,7 @@ namespace wygrzebapi.Controllers
                     _ctx.Users.Update(_ctx.Users.Where(u => u.Login == login).SingleOrDefault());
                     _ctx.SaveChanges();
                 }
-
+*/
                 return StatusCode(200);
             }
             catch (Exception)

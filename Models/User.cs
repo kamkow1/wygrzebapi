@@ -39,8 +39,7 @@ namespace wygrzebapi.Models
                     string bio, 
                     int age, 
                     string country, 
-                    string email,
-                    string remoteIp)
+                    string email)
         {
             this.Login = login;
             this.Password = password;
@@ -48,7 +47,6 @@ namespace wygrzebapi.Models
             this.Age = age;
             this.Country = country;
             this.Email = email;
-            this.CurrentRemoteIpAdress = remoteIp;
         }
     }
 }
