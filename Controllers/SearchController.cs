@@ -22,8 +22,9 @@ namespace wygrzebapi.Controllers
             if (query.Trim().Length == 0
                 || userId.ToString().Trim().Length == 0)
                 return StatusCode(422);
-
-            Search search = new(query: query, userId: userId);
+            // Request.HttpContext.Connection.RemoteIpAddress.ToString()
+            Search search = new(query: query, 
+                                userId: userId);
 
             _ctx.Searches.Add(search);
             _ctx.SaveChanges();

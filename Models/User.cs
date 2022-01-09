@@ -20,7 +20,11 @@ namespace wygrzebapi.Models
         [MinLength(5, ErrorMessage = "min is 5 characters!")]
         public string Password { get; set; }
 
+        public string Email { get; set; }
+
         public DateTime CreationDate { get; } = DateTime.UtcNow;
+
+        public string CurrentRemoteIpAdress { get; set; }
 
         public int Age { get; set; }
 
@@ -30,13 +34,21 @@ namespace wygrzebapi.Models
 
         public virtual ICollection<Search> Searches { get; set; }
 
-        public User(string login, string password, string bio, int age, string country)
+        public User(string login, 
+                    string password, 
+                    string bio, 
+                    int age, 
+                    string country, 
+                    string email,
+                    string remoteIp)
         {
             this.Login = login;
             this.Password = password;
             this.Bio = bio;
             this.Age = age;
             this.Country = country;
+            this.Email = email;
+            this.CurrentRemoteIpAdress = remoteIp;
         }
     }
 }
