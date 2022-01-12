@@ -25,6 +25,7 @@ namespace wygrzebapi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors();
 
             services.AddControllers()
                 .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve);
@@ -62,6 +63,10 @@ namespace wygrzebapi
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseCors(options =>
+                options.WithOrigins("https://localhost:44392/").AllowAnyMethod()
+            );
 
             app.UseEndpoints(endpoints =>
             {

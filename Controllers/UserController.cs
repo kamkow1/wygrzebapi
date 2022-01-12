@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using wygrzebapi.Context;
 using wygrzebapi.Email;
+using wygrzebapi.Models;
 
 namespace wygrzebapi.Controllers
 {
@@ -26,14 +27,21 @@ namespace wygrzebapi.Controllers
         {
             try
             {
-                if (_ctx.Users.Where(u => u.Login == login).FirstOrDefault() != null) return StatusCode(409);
+                if (_ctx.Users.Where(u => u.Login == login).FirstOrDefault() != null)
+                    return StatusCode(409);
 
-                _ctx.Users.Add(new(login: login,
-                                   password: password,
-                                   bio: bio,
-                                   age: age,
-                                   country: country,
-                                   email: email));
+                _ctx.Users.Add(new User()
+                {
+                    Login = login,
+                    Password = password,
+                    Bio = bio,
+                    Age = age,
+                    Country = country,
+                    Email = email,
+                    RemoteIpAdress = HttpContext.Connection.RemoteIpAddress.ToString(),
+                    CreationDate = DateTime.UtcNow
+                });
+
                 _ctx.SaveChanges();
 
                 string body = string.Empty;
@@ -53,8 +61,9 @@ namespace wygrzebapi.Controllers
 
                 return StatusCode(200);
             }
-            catch (System.Exception)
+            catch (Exception)
             {
+
                 return StatusCode(500);
             }
         }
@@ -70,36 +79,69 @@ namespace wygrzebapi.Controllers
                     return StatusCode(400);
                 }
 
-                if (_ctx.Users.Where(u => u.Login == login || u.Password == password) == null)
+                User user = (User)_ctx.Users.Where(u => u.Login == login || u.Password == password);
+
+                if (user == null)
                 {
                     return StatusCode(404);
                 }
-/*
-                if (Request.HttpContext.Connection.RemoteIpAddress.ToString() != _ctx.Users
-                                                                                    .Where(u => u.Login == login)
-                                                                                    .Select(u => u.CurrentRemoteIpAdress)
-                                                                                    .SingleOrDefault())
-                {
-                    string body = string.Empty;
-                    using (StreamReader reader = new(Path.Combine("Email/Templates", "LocationChangedEmailTemplate.html")))
-                    {
-                        body = reader.ReadToEnd();
-                    }
 
-                    _emailService.Send(_ctx.Users
-                                        .Where(u => u.Login == login)
-                                        .Select(u => u.Email)
-                                        .SingleOrDefault(),
-                                        "Ktoś próbował wejść na twoje konto!",
-                                        "servicewygrzeb@gmail.com",
-                                        "wygrzeb2022",
-                                        body);
+                user.RemoteIpAdress = HttpContext.Connection.RemoteIpAddress.ToString();
+                _ctx.Users.Update(user);
+                _ctx.SaveChanges();
 
-                    _ctx.Users.Where(u => u.Login == login).SingleOrDefault().CurrentRemoteIpAdress = Request.HttpContext.Connection.RemoteIpAddress.ToString();
-                    _ctx.Users.Update(_ctx.Users.Where(u => u.Login == login).SingleOrDefault());
-                    _ctx.SaveChanges();
-                }
-*/
+                return Ok(new {
+                    id = user.Id,
+                    ip = user.RemoteIpAdress
+                });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }
+
+        [HttpGet]
+        [Route("/getbyid")]
+        public IActionResult GetUser(int id)
+        {
+            try
+            {
+                return Ok(_ctx.Users
+                            .Where(u => u.Id == id)
+                            .Select(u => new { 
+                                u.Login,
+                                u.Password,
+                                u.Email,
+                                u.Bio,
+                                u.Country,
+                                u.Age,
+                                u.CreationDate
+                            }));
+            }
+            catch (NotSupportedException)
+            {
+                return StatusCode(200);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }
+
+        [HttpGet]
+        [Route("/articles")]
+        public IActionResult GetArticlesByUserId(int id)
+        {
+            try
+            {
+                return Ok(_ctx.Users
+                                .Where(u => u.Id == id)
+                                .Select(u => u.Articles)
+                                .SingleOrDefault());
+            }
+            catch (NotSupportedException)
+            {
                 return StatusCode(200);
             }
             catch (Exception)
@@ -120,7 +162,11 @@ namespace wygrzebapi.Controllers
                             .SingleOrDefault()
                             .OrderByDescending(s => s.TimeStamp));
             }
-            catch (System.Exception)
+            catch (NotSupportedException)
+            {
+                return StatusCode(200);
+            }
+            catch (Exception)
             {
                 return StatusCode(500);
             }

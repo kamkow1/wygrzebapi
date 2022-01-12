@@ -10,7 +10,7 @@ using wygrzebapi.Context;
 namespace wygrzebapi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220109225918_DbMigration")]
+    [Migration("20220112194448_DbMigration")]
     partial class DbMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,6 +21,44 @@ namespace wygrzebapi.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63)
                 .HasAnnotation("ProductVersion", "5.0.0");
 
+            modelBuilder.Entity("wygrzebapi.Models.Article", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .UseSerialColumn();
+
+                    b.Property<string>("Content")
+                        .HasColumnType("varchar(1000)");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("timestamp");
+
+                    b.Property<int>("Downvotes")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Thumbail")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("varchar(60)");
+
+                    b.Property<int>("Upvotes")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ViewCount")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Articles");
+                });
+
             modelBuilder.Entity("wygrzebapi.Models.Search", b =>
                 {
                     b.Property<int>("Id")
@@ -29,10 +67,10 @@ namespace wygrzebapi.Migrations
                         .UseSerialColumn();
 
                     b.Property<string>("Query")
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(140)");
 
                     b.Property<DateTime>("TimeStamp")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("timestamp");
 
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
@@ -60,19 +98,22 @@ namespace wygrzebapi.Migrations
                     b.Property<string>("Country")
                         .HasColumnType("text");
 
-                    b.Property<string>("CurrentRemoteIpAdress")
-                        .HasColumnType("text");
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("timestamp");
 
                     b.Property<string>("Email")
                         .HasColumnType("text");
 
                     b.Property<string>("Login")
                         .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
+                        .HasColumnType("varchar(20)");
 
                     b.Property<string>("Password")
                         .HasMaxLength(32)
-                        .HasColumnType("character varying(32)");
+                        .HasColumnType("varchar(32)");
+
+                    b.Property<string>("RemoteIpAdress")
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -80,6 +121,17 @@ namespace wygrzebapi.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("wygrzebapi.Models.Article", b =>
+                {
+                    b.HasOne("wygrzebapi.Models.User", "User")
+                        .WithMany("Articles")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("wygrzebapi.Models.Search", b =>
@@ -95,6 +147,8 @@ namespace wygrzebapi.Migrations
 
             modelBuilder.Entity("wygrzebapi.Models.User", b =>
                 {
+                    b.Navigation("Articles");
+
                     b.Navigation("Searches");
                 });
 #pragma warning restore 612, 618

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using wygrzebapi.Context;
 using wygrzebapi.Models;
 
@@ -19,17 +20,33 @@ namespace wygrzebapi.Controllers
         [Route("/new")]
         public IActionResult CreateNew(string query, int userId)
         {
-            if (query.Trim().Length == 0
-                || userId.ToString().Trim().Length == 0)
-                return StatusCode(422);
-            // Request.HttpContext.Connection.RemoteIpAddress.ToString()
-            Search search = new(query: query, 
-                                userId: userId);
+            try
+            {
+                if (query.Trim().Length == 0
+                                || userId.ToString().Trim().Length == 0)
+                    return StatusCode(422);
+                // Request.HttpContext.Connection.RemoteIpAddress.ToString()
+                /*Search search = new(query: query,
+                                    userId: userId,
+                                    timestamp: DateTime.UtcNow);*/
 
-            _ctx.Searches.Add(search);
-            _ctx.SaveChanges();
+                _ctx.Searches.Add(new Search() { 
+                    Query = query,
+                    UserId = userId,
+                    TimeStamp = DateTime.UtcNow
+                });
+                _ctx.SaveChanges();
 
-            return StatusCode(200);
+                return StatusCode(200);
+            }
+            catch (NotSupportedException)
+            {
+                return StatusCode(200);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
         }
     }
 }

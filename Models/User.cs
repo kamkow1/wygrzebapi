@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace wygrzebapi.Models
 {
@@ -22,31 +22,40 @@ namespace wygrzebapi.Models
 
         public string Email { get; set; }
 
-        public DateTime CreationDate { get; } = DateTime.UtcNow;
-
-        public string CurrentRemoteIpAdress { get; set; }
+        public DateTime CreationDate { get; set; }
 
         public int Age { get; set; }
 
-        public string Country { get; set; } = "Polska";
+        public string Country { get; set; }
 
         public string Bio { get; set; }
 
+        public string RemoteIpAdress { get; set; }
+
         public virtual ICollection<Search> Searches { get; set; }
 
+        public virtual ICollection<Article> Articles { get; set; }
+/*
+        [JsonConstructor]
         public User(string login, 
                     string password, 
                     string bio, 
                     int age, 
                     string country, 
-                    string email)
-        {
+                    string email,
+                    DateTime creationDate) {
             this.Login = login;
             this.Password = password;
             this.Bio = bio;
             this.Age = age;
             this.Country = country;
             this.Email = email;
+            this.CreationDate = creationDate;
         }
+
+        public User()
+        {
+                
+        }*/
     }
 }

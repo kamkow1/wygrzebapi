@@ -5,6 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace wygrzebapi.Models
 {
+    [Serializable]
     public class Search
     {
         [Key]
@@ -12,18 +13,25 @@ namespace wygrzebapi.Models
 
         public string Query { get; set; }
 
-        public DateTime TimeStamp { get; set; } = DateTime.Now;
+        public DateTime TimeStamp { get; set; }
 
         [ForeignKey("User")]
         public int UserId { get; set; }
 
         [JsonIgnore]
         public virtual User User { get; set; }
-
-        public Search(string query, int userId)
+/*
+        [JsonConstructor]
+        public Search(string query, int userId, DateTime timestamp)
         {
             this.Query = query;
             this.UserId = userId;
+            this.TimeStamp = timestamp;
         }
+
+        public Search()
+        {
+
+        }*/
     }
 }
