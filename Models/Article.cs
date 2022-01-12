@@ -18,9 +18,7 @@ namespace wygrzebapi.Models
         public string Content { get; set; }
 
 
-#nullable enable
-        public Uri? Thumbail { get; set; }
-#nullable restore
+        public string Thumbail { get; set; }
 
         public int Upvotes { get; set; }
         
@@ -33,31 +31,5 @@ namespace wygrzebapi.Models
 
         [JsonIgnore]
         public virtual User User { get; set; }
-/*
-        [JsonConstructor]
-        public Article(string title, 
-                       string content, 
-#nullable enable
-                       Uri? thumbnail, 
-#nullable restore
-                       int up, 
-                       int down, 
-                       int views, 
-                       int userId,
-                       DateTime creationDate) {
-            this.Title = title;
-            this.Content = content;
-            this.Thumbail = thumbnail;
-            this.Upvotes = up;
-            this.Downvotes = down;
-            this.ViewCount = views;
-            this.UserId = userId;
-            this.CreationDate = creationDate;
-        }
-
-        public Article()
-        {
-
-        }*/
     }
 }

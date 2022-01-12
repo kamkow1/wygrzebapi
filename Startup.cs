@@ -25,7 +25,12 @@ namespace wygrzebapi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors();
+            services.AddCors(o => o.AddPolicy("Policy", builder =>
+            {
+                builder.WithOrigins("https://localhost:44392/")
+                       .AllowAnyMethod()
+                       .AllowAnyHeader();
+            }));
 
             services.AddControllers()
                 .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve);
@@ -57,6 +62,8 @@ namespace wygrzebapi
                     PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Email/Templates")),
                     RequestPath = new PathString("/Email/Templates")
             });
+
+            app.UseCors("Policy");
 
             app.UseHttpsRedirection();
 

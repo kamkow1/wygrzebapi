@@ -20,18 +20,5 @@ namespace wygrzebapi.Models
 
         [JsonIgnore]
         public virtual User User { get; set; }
-/*
-        [JsonConstructor]
-        public Search(string query, int userId, DateTime timestamp)
-        {
-            this.Query = query;
-            this.UserId = userId;
-            this.TimeStamp = timestamp;
-        }
-
-        public Search()
-        {
-
-        }*/
     }
 }

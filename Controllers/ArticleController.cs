@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using wygrzebapi.Context;
 using wygrzebapi.Models;
+using Microsoft.AspNetCore.Cors;
 
 namespace wygrzebapi.Controllers
 {
@@ -18,23 +19,12 @@ namespace wygrzebapi.Controllers
             _ctx = ctx;
         }
 
+        [EnableCors("Policy")]
         [HttpPost]
         [Route("/create")]
-        public IActionResult CreateNewArticle(string title, string content,
-#nullable enable 
-        Uri? thumbnail,
-#nullable disable 
-        int up, int down, int views, int userId) {
+        public IActionResult CreateNewArticle(string title, string content, string thumbnail, int up, int down, int views, int userId) {
             try
             {
-                /*_ctx.Articles.Add(new Article(title: title, 
-                                              content: content, 
-                                              thumbnail: thumbnail, 
-                                              up: up, 
-                                              down: down,  
-                                              views: views, 
-                                              userId: userId,
-                                              creationDate: DateTime.UtcNow));*/
                 _ctx.Articles.Add(new Article()
                 {
                     Title = title,
@@ -50,16 +40,14 @@ namespace wygrzebapi.Controllers
 
                 return StatusCode(201);
             }
-            catch (NotSupportedException)
-            {
-                return StatusCode(200);
-            }
             catch (Exception)
             {
+
                 return StatusCode(500);
             }
         }
-    
+
+        [EnableCors("Policy")]
         [HttpGet]
         [Route("/recent")]
         public IActionResult GetTenRecentArticles()

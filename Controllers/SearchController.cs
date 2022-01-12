@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using wygrzebapi.Context;
 using wygrzebapi.Models;
@@ -16,19 +17,15 @@ namespace wygrzebapi.Controllers
             _ctx = ctx;
         }
 
+        [EnableCors("Policy")]
         [HttpPost]
         [Route("/new")]
         public IActionResult CreateNew(string query, int userId)
         {
             try
             {
-                if (query.Trim().Length == 0
-                                || userId.ToString().Trim().Length == 0)
+                if (query.Trim().Length == 0 || userId.ToString().Trim().Length == 0)
                     return StatusCode(422);
-                // Request.HttpContext.Connection.RemoteIpAddress.ToString()
-                /*Search search = new(query: query,
-                                    userId: userId,
-                                    timestamp: DateTime.UtcNow);*/
 
                 _ctx.Searches.Add(new Search() { 
                     Query = query,

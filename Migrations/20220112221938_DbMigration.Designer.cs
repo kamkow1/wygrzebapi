@@ -10,7 +10,7 @@ using wygrzebapi.Context;
 namespace wygrzebapi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220112194448_DbMigration")]
+    [Migration("20220112221938_DbMigration")]
     partial class DbMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

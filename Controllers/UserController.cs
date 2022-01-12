@@ -5,6 +5,8 @@ using System.Linq;
 using wygrzebapi.Context;
 using wygrzebapi.Email;
 using wygrzebapi.Models;
+using Microsoft.AspNetCore.Cors;
+using System.Collections.Generic;
 
 namespace wygrzebapi.Controllers
 {
@@ -21,6 +23,7 @@ namespace wygrzebapi.Controllers
             _emailService = es;
         }
 
+        [EnableCors("Policy")]
         [HttpPost]
         [Route("/register")]
         public IActionResult Register(string login, string password, string bio, int age, string country, string email)
@@ -68,6 +71,7 @@ namespace wygrzebapi.Controllers
             }
         }
 
+        [EnableCors("Policy")]
         [HttpPost]
         [Route("/login")]
         public IActionResult Login(string login, string password)
@@ -79,7 +83,7 @@ namespace wygrzebapi.Controllers
                     return StatusCode(400);
                 }
 
-                User user = (User)_ctx.Users.Where(u => u.Login == login || u.Password == password);
+                var user = _ctx.Users.Where(u => u.Login == login || u.Password == password).FirstOrDefault();
 
                 if (user == null)
                 {
@@ -90,17 +94,20 @@ namespace wygrzebapi.Controllers
                 _ctx.Users.Update(user);
                 _ctx.SaveChanges();
 
-                return Ok(new {
+                return Ok(new
+                {
                     id = user.Id,
                     ip = user.RemoteIpAdress
                 });
             }
             catch (Exception)
             {
+
                 return StatusCode(500);
             }
         }
 
+        [EnableCors("Policy")]
         [HttpGet]
         [Route("/getbyid")]
         public IActionResult GetUser(int id)
@@ -119,16 +126,13 @@ namespace wygrzebapi.Controllers
                                 u.CreationDate
                             }));
             }
-            catch (NotSupportedException)
-            {
-                return StatusCode(200);
-            }
             catch (Exception)
             {
                 return StatusCode(500);
             }
         }
 
+        [EnableCors("Policy")]
         [HttpGet]
         [Route("/articles")]
         public IActionResult GetArticlesByUserId(int id)
@@ -140,31 +144,24 @@ namespace wygrzebapi.Controllers
                                 .Select(u => u.Articles)
                                 .SingleOrDefault());
             }
-            catch (NotSupportedException)
-            {
-                return StatusCode(200);
-            }
             catch (Exception)
             {
                 return StatusCode(500);
             }
         }
 
+        [EnableCors("Policy")]
         [HttpGet]
         [Route("/history")]
         public IActionResult GetSearchHistory(int id)
         {
             try
             {
-                return Ok(_ctx.Users
+                return Ok(new List<Search>(_ctx.Users
                             .Where(u => u.Id == id)
                             .Select(u => u.Searches)
                             .SingleOrDefault()
-                            .OrderByDescending(s => s.TimeStamp));
-            }
-            catch (NotSupportedException)
-            {
-                return StatusCode(200);
+                            .OrderByDescending(s => s.TimeStamp)));
             }
             catch (Exception)
             {

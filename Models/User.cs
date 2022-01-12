@@ -35,27 +35,5 @@ namespace wygrzebapi.Models
         public virtual ICollection<Search> Searches { get; set; }
 
         public virtual ICollection<Article> Articles { get; set; }
-/*
-        [JsonConstructor]
-        public User(string login, 
-                    string password, 
-                    string bio, 
-                    int age, 
-                    string country, 
-                    string email,
-                    DateTime creationDate) {
-            this.Login = login;
-            this.Password = password;
-            this.Bio = bio;
-            this.Age = age;
-            this.Country = country;
-            this.Email = email;
-            this.CreationDate = creationDate;
-        }
-
-        public User()
-        {
-                
-        }*/
     }
 }
