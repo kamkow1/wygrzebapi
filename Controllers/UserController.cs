@@ -5,13 +5,11 @@ using System.Linq;
 using wygrzebapi.Context;
 using wygrzebapi.Email;
 using wygrzebapi.Models;
-using Microsoft.AspNetCore.Cors;
 using System.Collections.Generic;
 
 namespace wygrzebapi.Controllers
 {
     [ApiController]
-    [Route("/api/user")]
     public class UserController : ControllerBase
     {
         private readonly AppDbContext _ctx;
@@ -23,24 +21,20 @@ namespace wygrzebapi.Controllers
             _emailService = es;
         }
 
-        [EnableCors("Policy")]
         [HttpPost]
-        [Route("/register")]
-        public IActionResult Register(string login, string password, string bio, int age, string country, string email)
+        [Route("/user/register")]
+        public IActionResult Register(User user)
         {
             try
             {
-                if (_ctx.Users.Where(u => u.Login == login).FirstOrDefault() != null)
+                if (_ctx.Users.Where(u => u.Login == user.Login).FirstOrDefault() != null)
                     return StatusCode(409);
 
                 _ctx.Users.Add(new User()
                 {
-                    Login = login,
-                    Password = password,
-                    Bio = bio,
-                    Age = age,
-                    Country = country,
-                    Email = email,
+                    Login = user.Login,
+                    Password = user.Password,
+                    Email = user.Email,
                     RemoteIpAdress = HttpContext.Connection.RemoteIpAddress.ToString(),
                     CreationDate = DateTime.UtcNow
                 });
@@ -54,10 +48,10 @@ namespace wygrzebapi.Controllers
                 }
 
                 _emailService.Send(_ctx.Users
-                                    .Where(u => u.Login == login)
+                                    .Where(u => u.Login == user.Login)
                                     .Select(u => u.Email)
                                     .SingleOrDefault(),
-                                    $"Witaj użytkowniku {_ctx.Users.Where(u => u.Login == login).Select(u => u.Login).SingleOrDefault()}!",
+                                    $"Witaj użytkowniku {_ctx.Users.Where(u => u.Login == user.Login).Select(u => u.Login).SingleOrDefault()}!",
                                     "servicewygrzeb@gmail.com",
                                     "wygrzeb2022",
                                     body);
@@ -71,33 +65,28 @@ namespace wygrzebapi.Controllers
             }
         }
 
-        [EnableCors("Policy")]
         [HttpPost]
-        [Route("/login")]
-        public IActionResult Login(string login, string password)
+        [Route("/user/login")]
+        public IActionResult Login(User user)
         {
             try
             {
-                if (login.Trim().Length == 0 || password.Trim().Length == 0)
-                {
-                    return StatusCode(400);
-                }
 
-                var user = _ctx.Users.Where(u => u.Login == login || u.Password == password).FirstOrDefault();
+                var userFromDb = _ctx.Users.Where(u => u.Login == user.Login || u.Password == user.Password).FirstOrDefault();
 
-                if (user == null)
+                if (userFromDb == null)
                 {
                     return StatusCode(404);
                 }
 
-                user.RemoteIpAdress = HttpContext.Connection.RemoteIpAddress.ToString();
-                _ctx.Users.Update(user);
+                userFromDb.RemoteIpAdress = HttpContext.Connection.RemoteIpAddress.ToString();
+                _ctx.Users.Update(userFromDb);
                 _ctx.SaveChanges();
 
                 return Ok(new
                 {
-                    id = user.Id,
-                    ip = user.RemoteIpAdress
+                    id = userFromDb.Id,
+                    ip = userFromDb.RemoteIpAdress
                 });
             }
             catch (Exception)
@@ -107,9 +96,8 @@ namespace wygrzebapi.Controllers
             }
         }
 
-        [EnableCors("Policy")]
         [HttpGet]
-        [Route("/getbyid")]
+        [Route("/user/getbyid")]
         public IActionResult GetUser(int id)
         {
             try
@@ -121,8 +109,6 @@ namespace wygrzebapi.Controllers
                                 u.Password,
                                 u.Email,
                                 u.Bio,
-                                u.Country,
-                                u.Age,
                                 u.CreationDate
                             }));
             }
@@ -132,9 +118,8 @@ namespace wygrzebapi.Controllers
             }
         }
 
-        [EnableCors("Policy")]
         [HttpGet]
-        [Route("/articles")]
+        [Route("/user/articles")]
         public IActionResult GetArticlesByUserId(int id)
         {
             try
@@ -150,9 +135,8 @@ namespace wygrzebapi.Controllers
             }
         }
 
-        [EnableCors("Policy")]
         [HttpGet]
-        [Route("/history")]
+        [Route("/user/history")]
         public IActionResult GetSearchHistory(int id)
         {
             try

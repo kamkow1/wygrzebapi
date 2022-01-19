@@ -1,13 +1,12 @@
-﻿using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Linq;
 using wygrzebapi.Context;
 using wygrzebapi.Models;
 
 namespace wygrzebapi.Controllers
 {
     [ApiController]
-    [Route("/api/search")]
     public class SearchController : ControllerBase
     {
         private readonly AppDbContext _ctx;
@@ -17,33 +16,24 @@ namespace wygrzebapi.Controllers
             _ctx = ctx;
         }
 
-        [EnableCors("Policy")]
         [HttpPost]
-        [Route("/new")]
+        [Route("/search/new")]
         public IActionResult CreateNew(string query, int userId)
         {
-            try
-            {
-                if (query.Trim().Length == 0 || userId.ToString().Trim().Length == 0)
-                    return StatusCode(422);
+            if (query.Trim().Length == 0 || userId.ToString().Trim().Length == 0)
+                return StatusCode(422);
 
-                _ctx.Searches.Add(new Search() { 
-                    Query = query,
-                    UserId = userId,
-                    TimeStamp = DateTime.UtcNow
-                });
-                _ctx.SaveChanges();
+            Search search = new()
+            {
+                Query = query,
+                UserId = userId,
+                TimeStamp = DateTime.UtcNow
+            };
 
-                return StatusCode(200);
-            }
-            catch (NotSupportedException)
-            {
-                return StatusCode(200);
-            }
-            catch (Exception)
-            {
-                return StatusCode(500);
-            }
+            _ctx.Searches.Add(search);
+            _ctx.SaveChanges();
+
+            return Ok(_ctx.Articles.Where(a => a.Title.Contains(query) || a.Content.Contains(query) || a.User.Login.Contains(query)));
         }
     }
 }

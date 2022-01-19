@@ -25,15 +25,15 @@ namespace wygrzebapi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors(o => o.AddPolicy("Policy", builder =>
+            services.AddCors(options => options.AddPolicy("ApiCorsPolicy", builder =>
             {
-                builder.WithOrigins("https://localhost:44392/")
+                builder.WithOrigins("http://localhost:44392")
                        .AllowAnyMethod()
                        .AllowAnyHeader();
             }));
 
-            services.AddControllers()
-                .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve);
+            services.AddControllers();
+                //.AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve);
 
             services.AddDbContextPool<AppDbContext>(options => 
             options.UseNpgsql(Configuration.GetConnectionString("wygrzebConStr")));
@@ -63,17 +63,17 @@ namespace wygrzebapi
                     RequestPath = new PathString("/Email/Templates")
             });
 
-            app.UseCors("Policy");
+            app.UseCors(builder => builder
+                 .AllowAnyOrigin()
+                 .AllowAnyMethod()
+                 .AllowAnyHeader());
+            app.UseCors("ApiCorsPolicy");
 
             app.UseHttpsRedirection();
 
             app.UseRouting();
 
             app.UseAuthorization();
-
-            app.UseCors(options =>
-                options.WithOrigins("https://localhost:44392/").AllowAnyMethod()
-            );
 
             app.UseEndpoints(endpoints =>
             {

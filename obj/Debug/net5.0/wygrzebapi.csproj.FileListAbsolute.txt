@@ -35,3 +35,5 @@ C:\Users\kamil\source\repos\wygrzebapi\obj\Debug\net5.0\wygrzebapi.dll
 C:\Users\kamil\source\repos\wygrzebapi\obj\Debug\net5.0\ref\wygrzebapi.dll
 C:\Users\kamil\source\repos\wygrzebapi\obj\Debug\net5.0\wygrzebapi.pdb
 C:\Users\kamil\source\repos\wygrzebapi\obj\Debug\net5.0\wygrzebapi.genruntimeconfig.cache
+C:\Users\kamil\source\repos\wygrzebapi\bin\Debug\net5.0\Json.Net.dll
+C:\Users\kamil\source\repos\wygrzebapi\bin\Debug\net5.0\Newtonsoft.Json.dll

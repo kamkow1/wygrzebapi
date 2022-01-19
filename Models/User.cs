@@ -24,10 +24,6 @@ namespace wygrzebapi.Models
 
         public DateTime CreationDate { get; set; }
 
-        public int Age { get; set; }
-
-        public string Country { get; set; }
-
         public string Bio { get; set; }
 
         public string RemoteIpAdress { get; set; }
