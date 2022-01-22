@@ -96,21 +96,20 @@ namespace wygrzebapi.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("/user/getbyid")]
-        public IActionResult GetUser(int id)
+        public IActionResult GetUser(User user)
         {
             try
             {
                 return Ok(_ctx.Users
-                            .Where(u => u.Id == id)
+                            .Where(u => u.Id == user.Id)
                             .Select(u => new { 
                                 u.Login,
                                 u.Password,
                                 u.Email,
-                                u.Bio,
                                 u.CreationDate
-                            }));
+                            }).SingleOrDefault());
             }
             catch (Exception)
             {
@@ -118,14 +117,14 @@ namespace wygrzebapi.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("/user/articles")]
-        public IActionResult GetArticlesByUserId(int id)
+        public IActionResult GetArticlesByUserId(User user)
         {
             try
             {
                 return Ok(_ctx.Users
-                                .Where(u => u.Id == id)
+                                .Where(u => u.Id == user.Id)
                                 .Select(u => u.Articles)
                                 .SingleOrDefault());
             }
@@ -149,6 +148,32 @@ namespace wygrzebapi.Controllers
             }
             catch (Exception)
             {
+                return StatusCode(500);
+            }
+        }
+
+        [HttpPatch]
+        [Route("/user/updatelogin")]
+        public IActionResult UpdateLogin(User user)
+        {
+            try
+            {
+                var u = _ctx.Users.Find(user.Id);
+
+                if (user.Password != u.Password)
+                {
+                    return StatusCode(403);
+                }
+
+                u.Login = user.Login;
+                _ctx.Users.Update(u);
+                _ctx.SaveChanges();
+
+                return StatusCode(200);
+            }
+            catch (Exception)
+            {
+
                 return StatusCode(500);
             }
         }

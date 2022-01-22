@@ -18,22 +18,24 @@ namespace wygrzebapi.Controllers
 
         [HttpPost]
         [Route("/search/new")]
-        public IActionResult CreateNew(string query, int userId)
+        public IActionResult CreateNew(Search newSearch)
         {
-            if (query.Trim().Length == 0 || userId.ToString().Trim().Length == 0)
+            if (newSearch.Query.Trim().Length == 0 || newSearch.UserId.ToString().Trim().Length == 0)
                 return StatusCode(422);
+
+            
 
             Search search = new()
             {
-                Query = query,
-                UserId = userId,
+                Query = newSearch.Query,
+                UserId = newSearch.UserId,
                 TimeStamp = DateTime.UtcNow
             };
 
             _ctx.Searches.Add(search);
             _ctx.SaveChanges();
 
-            return Ok(_ctx.Articles.Where(a => a.Title.Contains(query) || a.Content.Contains(query) || a.User.Login.Contains(query)));
+            return Ok(_ctx.Articles.Where(a => a.Title.Contains(newSearch.Query) || a.Content.Contains(newSearch.Query) || a.User.Login.Contains(newSearch.Query)));
         }
     }
 }

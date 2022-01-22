@@ -24,7 +24,6 @@ namespace wygrzebapi.Models
         
         public int Downvotes { get; set; }
 
-        public int ViewCount { get; set; }
 
         [ForeignKey("User")]
         public int UserId { get; set; }

@@ -21,19 +21,18 @@ namespace wygrzebapi.Controllers
 
         [HttpPost]
         [Route("/article/create")]
-        public IActionResult CreateNewArticle(string title, string content, string thumbnail, int up, int down, int views, int userId)
+        public IActionResult CreateNewArticle(Article article)
         {
             try
             {
                 _ctx.Articles.Add(new Article()
                 {
-                    Title = title,
-                    Content = content,
-                    Thumbail = thumbnail,
-                    Upvotes = up,
-                    Downvotes = down,
-                    ViewCount = views,
-                    UserId = userId,
+                    Title = article.Title,
+                    Content = article.Content,
+                    Thumbail = article.Thumbail,
+                    Upvotes = article.Upvotes,
+                    Downvotes = article.Downvotes,
+                    UserId = article.UserId,
                     CreationDate = DateTime.UtcNow
                 });
                 _ctx.SaveChanges();
@@ -70,9 +69,9 @@ namespace wygrzebapi.Controllers
                 var article = _ctx.Articles.Find(a.Id);
                 article.Upvotes++;
                 _ctx.Articles.Update(article);
-                _ctx.SaveChanges();                
+                _ctx.SaveChanges();
 
-                return StatusCode(200);
+                return Ok(_ctx.Articles.Find(a.Id).Upvotes) ;
             }
             catch (Exception)
             {

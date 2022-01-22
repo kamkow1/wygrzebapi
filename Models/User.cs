@@ -24,8 +24,6 @@ namespace wygrzebapi.Models
 
         public DateTime CreationDate { get; set; }
 
-        public string Bio { get; set; }
-
         public string RemoteIpAdress { get; set; }
 
         public virtual ICollection<Search> Searches { get; set; }
