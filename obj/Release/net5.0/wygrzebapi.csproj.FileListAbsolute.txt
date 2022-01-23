@@ -21,7 +21,6 @@ C:\Users\kamil\source\repos\wygrzebapi\bin\Release\net5.0\Npgsql.EntityFramework
 C:\Users\kamil\source\repos\wygrzebapi\bin\Release\net5.0\Swashbuckle.AspNetCore.Swagger.dll
 C:\Users\kamil\source\repos\wygrzebapi\bin\Release\net5.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 C:\Users\kamil\source\repos\wygrzebapi\bin\Release\net5.0\Swashbuckle.AspNetCore.SwaggerUI.dll
-C:\Users\kamil\source\repos\wygrzebapi\obj\Release\net5.0\wygrzebapi.csproj.AssemblyReference.cache
 C:\Users\kamil\source\repos\wygrzebapi\obj\Release\net5.0\wygrzebapi.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\kamil\source\repos\wygrzebapi\obj\Release\net5.0\wygrzebapi.AssemblyInfoInputs.cache
 C:\Users\kamil\source\repos\wygrzebapi\obj\Release\net5.0\wygrzebapi.AssemblyInfo.cs
@@ -37,3 +36,4 @@ C:\Users\kamil\source\repos\wygrzebapi\obj\Release\net5.0\wygrzebapi.dll
 C:\Users\kamil\source\repos\wygrzebapi\obj\Release\net5.0\ref\wygrzebapi.dll
 C:\Users\kamil\source\repos\wygrzebapi\obj\Release\net5.0\wygrzebapi.pdb
 C:\Users\kamil\source\repos\wygrzebapi\obj\Release\net5.0\wygrzebapi.genruntimeconfig.cache
+C:\Users\kamil\source\repos\wygrzebapi\obj\Release\net5.0\wygrzebapi.csproj.AssemblyReference.cache

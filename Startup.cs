@@ -27,16 +27,21 @@ namespace wygrzebapi
         {
             services.AddCors(options => options.AddPolicy("ApiCorsPolicy", builder =>
             {
-                builder.WithOrigins("http://localhost:44392")
-                       .AllowAnyMethod()
-                       .AllowAnyHeader();
+                /*
+                                builder.WithOrigins("http://localhost:44392")
+                                       .AllowAnyMethod()
+                                       .AllowAnyHeader();*/
+
+                builder.WithOrigins("http://wygrzebapi.azurewebsites.net/")
+                                       .AllowAnyMethod()
+                                       .AllowAnyHeader();
             }));
 
             services.AddControllers();
-                //.AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve);
 
             services.AddDbContextPool<AppDbContext>(options => 
             options.UseNpgsql(Configuration.GetConnectionString("wygrzebConStr")));
+
 
             services.AddScoped<IEmailService, EmailService>();
 
@@ -56,12 +61,12 @@ namespace wygrzebapi
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "wygrzebapi v1"));
             }
 
-            app.UseStaticFiles(new StaticFileOptions()
+            /*app.UseStaticFiles(new StaticFileOptions()
             {
                 FileProvider = new 
                     PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Email/Templates")),
                     RequestPath = new PathString("/Email/Templates")
-            });
+            });*/
 
             app.UseCors(builder => builder
                  .AllowAnyOrigin()

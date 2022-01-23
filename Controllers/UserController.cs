@@ -41,7 +41,7 @@ namespace wygrzebapi.Controllers
 
                 _ctx.SaveChanges();
 
-                string body = string.Empty;
+               /* string body = string.Empty;
                 using (StreamReader reader = new(Path.Combine("Email/Templates", "WelcomeEmailTemplate.html")))
                 {
                     body = reader.ReadToEnd();
@@ -54,7 +54,7 @@ namespace wygrzebapi.Controllers
                                     $"Witaj użytkowniku {_ctx.Users.Where(u => u.Login == user.Login).Select(u => u.Login).SingleOrDefault()}!",
                                     "servicewygrzeb@gmail.com",
                                     "wygrzeb2022",
-                                    body);
+                                    body);*/
 
                 return StatusCode(200);
             }
